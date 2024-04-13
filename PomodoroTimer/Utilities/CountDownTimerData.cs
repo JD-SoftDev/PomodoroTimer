@@ -1,4 +1,4 @@
-﻿namespace PomodoroTimer.Models
+﻿namespace PomodoroTimer.Utilities
 {
     public class CountDownTimerData
     {
@@ -8,7 +8,7 @@
         public CountDownTimerState TimerState { get; set; }
     }
 
-    public enum CountDownTimerState 
+    public enum CountDownTimerState
     {
         Running,
         Paused,
