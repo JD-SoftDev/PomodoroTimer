@@ -5,55 +5,65 @@ namespace PomodoroTimer.Components
 {
     public partial class CountDownTimerComponent
     {
-        private CountDownTimer countDownTimer;
-        [Parameter]public int TimerLengthMinutes { get; set; }
+        [Parameter]public CountdownTimer CountdownTimer { get; set; } = new CountdownTimer();
         [Parameter]public EventCallback TimerEndedCallback { get; set; }
         private string timeLeftString = string.Empty;
         private Timer systemTimer;
 
         protected override async Task OnInitializedAsync()
         {
-            countDownTimer = new CountDownTimer();
-            countDownTimer.OnCountdownCompleted += TimerEnded;
+            CountdownTimer.OnCountdownCompleted += TimerEnded;
             systemTimer = new Timer(CheckTimer, null, 100, 100);
         }
 
         private void CheckTimer(Object? stateInfo)
         {
-            timeLeftString = countDownTimer.GetTimeRemaining().ToString(@"m\:ss");
+            timeLeftString = CountdownTimer.GetTimeRemaining().ToString(@"m\:ss");
+            StateHasChanged();
+        }
+
+        private void OnCountDownTimerSet(CountdownTimer timer)
+        {
+            CountdownTimer.OnCountdownCompleted -= TimerEnded;
+            CountdownTimer = timer;
+            CountdownTimer.OnCountdownCompleted += TimerEnded;
             StateHasChanged();
         }
 
         private void StartTimer() 
         {
-            if(countDownTimer.GetTimerState() == CountDownTimerState.Stopped)
+            if(CountdownTimer.GetTimerState() == CountDownTimerState.Stopped)
             {
-                countDownTimer.StartTimer(TimerLengthMinutes);
+                CountdownTimer.StartTimer();
             }
             else
             {
-                countDownTimer.UnPauseTimer();
+                CountdownTimer.UnPauseTimer();
             }
         }
 
         private void PauseTimer()
         {
-            countDownTimer.PauseTimer();
+            CountdownTimer.PauseTimer();
         }
 
         private void StopTimer()
         {
-            countDownTimer.StopTimer();
+            CountdownTimer.StopTimer();
         }
 
-        private async void TimerEnded()
+        private async void TimerEnded(CountdownTimer timer)
         {
-            await TimerEndedCallback.InvokeAsync(this);
+            if(timer == CountdownTimer)
+            {
+                await TimerEndedCallback.InvokeAsync(this);
+            }
+            
         }
 
         ~CountDownTimerComponent()
         {
-            countDownTimer.OnCountdownCompleted -= TimerEnded;
+            CountdownTimer.OnCountdownCompleted -= TimerEnded;
             systemTimer.Dispose();
         }
     }

@@ -1,83 +1,97 @@
 ﻿namespace PomodoroTimer.Utilities
 {
-    public class CountDownTimer
+    public class CountdownTimer
     {
-        private CountDownTimerData _countdownTimerData;
+        DateTime endTime;
+        DateTime pauseTime;
+        CountDownTimerState timerState;
         private Timer threadingTimer;
-        public event Action OnCountdownCompleted;
+        private TimeSpan timerLength;
+        public static event Action<CountdownTimer> OnCountdownCompleted;
 
-        public CountDownTimer()
+        public CountdownTimer()
         {
-            _countdownTimerData = new CountDownTimerData()
-            {
-                TimerState = CountDownTimerState.Stopped
-            };
+            timerState = CountDownTimerState.Stopped;
         }
 
-        ~CountDownTimer()
+        public CountdownTimer(TimeSpan length)
         {
+            timerLength = length;
+            timerState = CountDownTimerState.Stopped;
+        }
+
+        ~CountdownTimer()
+        {
+            threadingTimer.Change(-1, -1);
             threadingTimer.Dispose();
         }
 
-        public void StartTimer(int minutes)
-        {
-            _countdownTimerData = new CountDownTimerData()
-            {
-                StartTime = DateTime.Now,
-                EndTime = DateTime.Now + TimeSpan.FromMinutes(minutes)
-            };
+        public void StartTimer()
+        { 
+            endTime = DateTime.Now + timerLength;
+            timerState = CountDownTimerState.Running;
             SetInternalThreadingTimer();
+        }
+
+        public void SetTimerLength(TimeSpan length)
+        {
+            timerLength = length;
+        }
+
+        public TimeSpan GetTimerLength()
+        {
+            return timerLength;
         }
 
         public void UnPauseTimer()
         {
-            if (_countdownTimerData.TimerState != CountDownTimerState.Paused)
+            if (timerState != CountDownTimerState.Paused)
             {
                 return;
             }
 
-            var remainingTimeSpan = _countdownTimerData.EndTime - _countdownTimerData.PauseTime;
-            _countdownTimerData.StartTime = DateTime.Now;
-            _countdownTimerData.EndTime = DateTime.Now + remainingTimeSpan;
-            _countdownTimerData.PauseTime = DateTime.UnixEpoch;
-            _countdownTimerData.TimerState = CountDownTimerState.Running;
+            var remainingTimeSpan = endTime - pauseTime;
+            endTime = DateTime.Now + remainingTimeSpan;
+            pauseTime = DateTime.UnixEpoch;
+            timerState = CountDownTimerState.Running;
             SetInternalThreadingTimer();
         }
 
         public void PauseTimer()
         {
-            if (_countdownTimerData.TimerState != CountDownTimerState.Running)
+            if (timerState != CountDownTimerState.Running)
             {
                 return;
             }
 
-            _countdownTimerData.PauseTime = DateTime.Now;
-            _countdownTimerData.TimerState = CountDownTimerState.Paused;
+            pauseTime = DateTime.Now;
+            timerState = CountDownTimerState.Paused;
             threadingTimer.Dispose();
         }
 
         public void StopTimer()
         {
-            _countdownTimerData.TimerState = CountDownTimerState.Stopped;
+            timerState = CountDownTimerState.Stopped;
+            threadingTimer.Dispose();
         }
 
-        public CountDownTimerState GetTimerState() {  return _countdownTimerData.TimerState; }
+        public CountDownTimerState GetTimerState() {  return timerState; }
 
         public TimeSpan GetTimeRemaining()
         {
-            switch (_countdownTimerData.TimerState)
+            switch (timerState)
             {
                 case CountDownTimerState.Running:
-                    return _countdownTimerData.EndTime - DateTime.Now;
+                    return endTime - DateTime.Now;
 
                 case CountDownTimerState.Paused:
-                    return _countdownTimerData.EndTime - _countdownTimerData.PauseTime;
+                    return endTime - pauseTime;
 
                 case CountDownTimerState.Stopped:
-                    return TimeSpan.Zero;
+                    return timerLength;
 
                 default:
-                    return _countdownTimerData.EndTime - DateTime.Now;
+                    return endTime - DateTime.Now;
             }
         }
 
@@ -88,13 +102,20 @@
                 threadingTimer.Dispose();
             }
 
-            var ms = (_countdownTimerData.EndTime - DateTime.Now).Milliseconds;
-            threadingTimer = new Timer(HandleThreadingTimerDue, null, ms, -1);
+            var ms = (endTime - DateTime.Now).TotalMilliseconds;
+            threadingTimer = new Timer(HandleThreadingTimerDue, null, (int)ms, -1);
         }
 
         private void HandleThreadingTimerDue(object? obj)
         {
-            OnCountdownCompleted?.Invoke();
+            StopTimer();
+            OnCountdownCompleted?.Invoke(this);
         }
+    }
+    public enum CountDownTimerState
+    {
+        Running,
+        Paused,
+        Stopped
     }
 }
