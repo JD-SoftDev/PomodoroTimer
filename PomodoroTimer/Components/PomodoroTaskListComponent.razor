@@ -1,0 +1,50 @@
+﻿@using PomodoroTimer.Models
+@using PomodoroTimer.Services
+<h3>Task List</h3>
+<TaskFormComponent OnFormSubmitted="AddTask"></TaskFormComponent>
+@if (todoList.Any())
+{
+    foreach(var task in todoList)
+    {
+        <TaskListItemComponent Task="task" OnRemoveButtonClicked="RemoveTaskButtoClicked" OnMoveToTopButtonClicked="MoveToTopButtonClicked"></TaskListItemComponent>
+    }
+}
+
+@code {
+    [Inject] private IPomodoroTaskManagerService _taskService { get; set; }
+    private IEnumerable<PomodoroTimerTask> todoList = new List<PomodoroTimerTask>();
+
+    private void AddTask(TaskForm taskForm)
+    {
+        var newTask = new PomodoroTimerTask()
+            {
+                Name = taskForm.Name,
+                NumberOfPomodorosToComplete = taskForm.EstNumPomodoros
+            };
+
+        _taskService.AddTask(newTask);
+        todoList = _taskService.GetToDoList();
+        StateHasChanged();
+    }
+
+    private void RemoveTaskButtoClicked(PomodoroTimerTask task)
+    {
+        _taskService.RemoveTask(task);
+        todoList = _taskService.GetToDoList();
+        StateHasChanged();
+    }
+
+    private void MoveToTopButtonClicked(PomodoroTimerTask task)
+    {
+        _taskService.MoveItem(task, 0);
+        todoList = _taskService.GetToDoList();
+        StateHasChanged();
+    }
+
+    public void HandlePomodoroCompleted()
+    {
+        _taskService.PomodoroCompleted();
+        todoList = _taskService.GetToDoList();
+        StateHasChanged();
+    }
+}

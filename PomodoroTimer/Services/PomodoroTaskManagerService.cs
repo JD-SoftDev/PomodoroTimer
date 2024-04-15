@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 
 namespace PomodoroTimer.Services
 {
-    public class PomodoroTaskManagerService
+    public class PomodoroTaskManagerService : IPomodoroTaskManagerService
     {
         private List<PomodoroTimerTask> todoList = new List<PomodoroTimerTask>();
         private List<PomodoroTimerTask> completedTasks = new List<PomodoroTimerTask>();
@@ -58,6 +58,14 @@ namespace PomodoroTimer.Services
             todoList[0].Completed = true;
             completedTasks.Add(todoList[0]);
             todoList.RemoveAt(0);
+        }
+
+        public void MoveItem(PomodoroTimerTask task, int moveToIndex)
+        {
+            if(task == null || !todoList.Contains(task)) { return; }
+
+            todoList.Remove(task);
+            todoList.Insert(moveToIndex, task);
         }
     }
 }

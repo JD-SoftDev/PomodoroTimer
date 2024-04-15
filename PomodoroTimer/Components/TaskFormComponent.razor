@@ -1,0 +1,24 @@
+﻿@using PomodoroTimer.Models
+<h3>TaskFormComponent</h3>
+<input @bind-value="taskName"/>
+<input @bind-value="estNumPomodoros" type="number" />
+<button @onclick="SubmitFormAsync">Add Task</button>
+
+@code {
+    private string taskName;
+    private int estNumPomodoros;
+    [Parameter] public EventCallback<TaskForm> OnFormSubmitted { get; set; }
+
+
+    private async void SubmitFormAsync()
+    {
+        var taskform = new TaskForm()
+            {
+                Name = taskName,
+                EstNumPomodoros = estNumPomodoros
+            };
+
+
+        await OnFormSubmitted.InvokeAsync(taskform);
+    }
+}

@@ -1,4 +1,5 @@
-﻿using PomodoroTimer.Utilities;
+﻿using Microsoft.AspNetCore.Components;
+using PomodoroTimer.Utilities;
 
 namespace PomodoroTimer.Components
 {
@@ -13,6 +14,8 @@ namespace PomodoroTimer.Components
 
         private CountdownTimer currentTimer = new CountdownTimer();
         private TimerType currentTimerType;
+        [Parameter]
+        public EventCallback PomodoroCompleted { get; set; }
 
         public PomodoroTimerManagerComponent()
         {
@@ -39,6 +42,7 @@ namespace PomodoroTimer.Components
                 {
                     StartShortBreakTimer();
                 }
+                PomodoroCompleted.InvokeAsync();
             }
             else
             {

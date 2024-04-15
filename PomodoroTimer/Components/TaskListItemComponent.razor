@@ -1,0 +1,26 @@
+﻿@using PomodoroTimer.Models
+<div style="margin: 10px, 10px, 10px, 10px;">
+    <h2>@Task.Name</h2>
+    <p>Estimated Pomodoros: @Task.NumberOfPomodorosToComplete</p>
+    <p>Current Number: @Task.CurrentNumberOfPomodoros</p>
+    <button @onclick="MoveToTopButtonAsync">Move To Top</button>
+    <button @onclick="RemoveButtonAsync">Remove</button>
+</div>
+
+@code {
+    [Parameter] public PomodoroTimerTask Task { get; set; }
+    [Parameter] public EventCallback<PomodoroTimerTask> OnMoveToTopButtonClicked { get; set; }
+    [Parameter] public EventCallback<PomodoroTimerTask> OnRemoveButtonClicked { get; set; }
+
+    private async void MoveToTopButtonAsync()
+    {
+        await OnMoveToTopButtonClicked.InvokeAsync(Task);
+    }
+
+    private async void RemoveButtonAsync()
+    {
+        await OnRemoveButtonClicked.InvokeAsync(Task);
+    }
+
+    
+}

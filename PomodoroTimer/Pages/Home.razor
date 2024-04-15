@@ -1,7 +1,21 @@
 ﻿@page "/"
+@using PomodoroTimer.Components
+@using PomodoroTimer.Services
+@inject IPomodoroTaskManagerService taskService
 
 <PageTitle>Home</PageTitle>
 
 
 
-<PomodoroTimer.Components.PomodoroTimerManagerComponent />
+<PomodoroTimer.Components.PomodoroTimerManagerComponent PomodoroCompleted="HandlePomodoroCompleted"/>
+<PomodoroTimer.Components.PomodoroTaskListComponent @ref="taskList"/>
+
+
+@code{
+    private PomodoroTaskListComponent taskList;
+
+    private void HandlePomodoroCompleted()
+    {
+        taskList.HandlePomodoroCompleted();
+    }
+}
