@@ -1,5 +1,12 @@
 ﻿@using PomodoroTimer.Models
 @using PomodoroTimer.Services
+
+@if (showCompleteTaskDiag)
+{
+    <h3>Current Task Completed?</h3>
+    <button @onclick="TaskCompletedButtonClicked">Yes</button>
+}
+
 <h3>Task List</h3>
 <TaskFormComponent OnFormSubmitted="AddTask"></TaskFormComponent>
 @if (todoList.Any())
@@ -8,9 +15,11 @@
     {
         <TaskListItemComponent Task="task" OnRemoveButtonClicked="RemoveTaskButtoClicked" OnMoveToTopButtonClicked="MoveToTopButtonClicked"></TaskListItemComponent>
     }
+    
 }
 
 @code {
+    private bool showCompleteTaskDiag = false;
     [Inject] private IPomodoroTaskManagerService _taskService { get; set; }
     private IEnumerable<PomodoroTimerTask> todoList = new List<PomodoroTimerTask>();
 
@@ -44,7 +53,15 @@
     public void HandlePomodoroCompleted()
     {
         _taskService.PomodoroCompleted();
+        showCompleteTaskDiag = _taskService.GetCurrentTask().CurrentNumberOfPomodoros >= _taskService.GetCurrentTask().NumberOfPomodorosToComplete;
         todoList = _taskService.GetToDoList();
+        StateHasChanged();
+    }
+
+    private void TaskCompletedButtonClicked()
+    {
+        _taskService.TaskCompleted();
+        showCompleteTaskDiag = _taskService.GetCurrentTask()?.CurrentNumberOfPomodoros >= _taskService.GetCurrentTask()?.NumberOfPomodorosToComplete;
         StateHasChanged();
     }
 }
