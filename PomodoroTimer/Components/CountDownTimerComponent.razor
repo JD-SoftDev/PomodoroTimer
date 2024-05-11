@@ -1,6 +1,27 @@
-﻿<h3>@timeLeftString</h3>
-<button @onclick="StartTimer">Play</button>
-<button @onclick="PauseTimer">Pause</button>
-<button @onclick="StopTimer">Stop</button>
-
-
+﻿<RadzenRow Style="max-width:200px;" class="rz-background-color-black rz-border-radius-6">
+    <RadzenColumn Size="12"   >
+        <RadzenRow JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center">
+            <RadzenText Text="@timeLeftString" TextStyle="TextStyle.DisplayH3" TextAlign="TextAlign.Center"></RadzenText>
+        </RadzenRow>
+        <RadzenRow JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center" class="rz-mx-4 rz-mb-4">
+            <RadzenColumn Size="4">
+                <RadzenRow JustifyContent="JustifyContent.Start" AlignItems="AlignItems.Center">
+                    <RadzenButton Variant="Variant.Filled" Click="@StartTimer" ButtonStyle="ButtonStyle.Dark" Icon="play_arrow"></RadzenButton>
+                </RadzenRow>
+            </RadzenColumn>
+            <RadzenColumn Size="4">
+                <RadzenRow JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center">
+                    <RadzenButton Variant="Variant.Filled" Click="@PauseTimer" ButtonStyle="ButtonStyle.Dark" Icon="pause"></RadzenButton>
+                </RadzenRow>
+                
+            </RadzenColumn>
+            <RadzenColumn Size="4" >
+                <RadzenRow JustifyContent="JustifyContent.End" AlignItems="AlignItems.End">
+                    <RadzenButton Variant="Variant.Filled" Click="@StopTimer" ButtonStyle="ButtonStyle.Dark" Icon="stop"></RadzenButton>
+                </RadzenRow>
+                
+            </RadzenColumn>
+        </RadzenRow>
+    </RadzenColumn>
+    
+</RadzenRow>

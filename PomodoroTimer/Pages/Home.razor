@@ -1,10 +1,10 @@
 ﻿@page "/"
 @using PomodoroTimer.Components
+@using PomodoroTimer.Models
 @using PomodoroTimer.Services
 @inject IPomodoroTaskManagerService taskService
 
 <PageTitle>Home</PageTitle>
-
 
 
 <PomodoroTimer.Components.PomodoroTimerManagerComponent PomodoroCompleted="HandlePomodoroCompleted"/>
@@ -14,8 +14,8 @@
 @code{
     private PomodoroTaskListComponent taskList;
 
-    private void HandlePomodoroCompleted()
+    private void HandlePomodoroCompleted(TimerFinishedDialogResult timerFinishedDialog)
     {
-        taskList.HandlePomodoroCompleted();
+        taskList.HandlePomodoroCompleted(timerFinishedDialog);
     }
 }

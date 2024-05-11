@@ -8,6 +8,7 @@
         private Timer threadingTimer;
         private TimeSpan timerLength;
         public static event Action<CountdownTimer> OnCountdownCompleted;
+        public bool IsActive { get { return timerState == CountDownTimerState.Running; } }
 
         public CountdownTimer()
         {
@@ -22,8 +23,8 @@
 
         ~CountdownTimer()
         {
-            threadingTimer.Change(-1, -1);
-            threadingTimer.Dispose();
+            threadingTimer?.Change(-1, -1);
+            threadingTimer?.Dispose();
         }
 
         public void StartTimer()

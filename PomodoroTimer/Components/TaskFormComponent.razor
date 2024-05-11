@@ -1,8 +1,36 @@
 ﻿@using PomodoroTimer.Models
-<h3>TaskFormComponent</h3>
-<input @bind-value="taskName"/>
-<input @bind-value="estNumPomodoros" type="number" />
-<button @onclick="SubmitFormAsync">Add Task</button>
+
+<RadzenRow Style="max-width: 400px;" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" class="rz-background-color-base-800 rz-border-radius-2 rz-shadow-3 rz-p-1">
+    <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
+        <RadzenColumn Size="4">
+            <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
+                <RadzenText TextStyle="TextStyle.Subtitle1">Task Name</RadzenText>
+            </RadzenRow>   
+        </RadzenColumn>
+        <RadzenColumn Size="8">
+            <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
+                <RadzenTextBox @bind-Value="taskName"></RadzenTextBox>
+            </RadzenRow>
+        </RadzenColumn>
+    </RadzenRow>
+    
+    <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
+        <RadzenColumn Size="4">
+            <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
+                <RadzenText TextStyle="TextStyle.Subtitle1">Estimated Number of Pomodoros</RadzenText>
+            </RadzenRow>
+        </RadzenColumn>
+        <RadzenColumn Size="8">
+            <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
+                <RadzenNumeric @bind-Value="estNumPomodoros"></RadzenNumeric>
+            </RadzenRow>
+        </RadzenColumn>
+    </RadzenRow>
+
+    <RadzenRow AlignItems="AlignItems.End" JustifyContent="JustifyContent.End">
+        <RadzenButton Click="@SubmitFormAsync" Text="Add Task"></RadzenButton>
+    </RadzenRow>
+</RadzenRow>
 
 @code {
     private string taskName;

@@ -1,11 +1,24 @@
 ﻿@using PomodoroTimer.Models
-<div style="margin: 10px, 10px, 10px, 10px;">
-    <h2>@Task.Name</h2>
-    <p>Estimated Pomodoros: @Task.NumberOfPomodorosToComplete</p>
-    <p>Current Number: @Task.CurrentNumberOfPomodoros</p>
-    <button @onclick="MoveToTopButtonAsync">Move To Top</button>
-    <button @onclick="RemoveButtonAsync">Remove</button>
-</div>
+
+<RadzenRow class="rz-background-color-base-800 rz-border-radius-6 rz-shadow-3 rz-p-1" Style="max-width: 400px;">
+    <RadzenColumn Size="6">
+        <RadzenRow AlignItems="AlignItems.Start" JustifyContent="JustifyContent.Center">
+            <RadzenText TextStyle="TextStyle.H4">@Task.Name</RadzenText>
+        </RadzenRow>
+    </RadzenColumn>
+
+    <RadzenColumn Size="2" >
+        <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Style="height:max-content;">
+            <RadzenText>@($"{Task.CurrentNumberOfPomodoros} of {Task.NumberOfPomodorosToComplete}")</RadzenText>
+        </RadzenRow>
+    </RadzenColumn>
+    <RadzenColumn Size="4" >
+        <RadzenRow AlignItems="AlignItems.End" JustifyContent="JustifyContent.Center" Style="height:max-content;">
+            <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="arrow_upward" Click="@MoveToTopButtonAsync"></RadzenButton>
+            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Click="@RemoveButtonAsync"></RadzenButton>
+        </RadzenRow>
+    </RadzenColumn>
+</RadzenRow>
 
 @code {
     [Parameter] public PomodoroTimerTask Task { get; set; }

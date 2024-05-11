@@ -1,0 +1,30 @@
+﻿@using PomodoroTimer.Models
+@inject DialogService dialogService
+
+<RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
+    <RadzenText TextStyle="TextStyle.DisplayH3">Timer Completed</RadzenText>
+    @if(TimerType == TimerType.Pomodoro)
+    {
+        <RadzenText TextStyle="TextStyle.DisplayH4">Task Completed?</RadzenText>
+        <RadzenRow>
+            <RadzenButton ButtonStyle="ButtonStyle.Primary" Text="Yes" Click="(() => CloseDialog(true))"></RadzenButton>
+            <RadzenButton ButtonStyle="ButtonStyle.Warning" Text="No" Click="(() => CloseDialog(false))" />
+        </RadzenRow>
+    }
+    else
+    {
+        <RadzenButton Text="Acknowledge" Click="(() => CloseDialog(false))"></RadzenButton>
+    }
+</RadzenStack>
+
+@code{
+    [Parameter] public TimerType TimerType { get; set; }
+
+    private void CloseDialog(bool taskCompleted)
+    {
+        dialogService.Close(new TimerFinishedDialogResult()
+            {
+                TaskCompleted = taskCompleted
+            });
+    }
+}

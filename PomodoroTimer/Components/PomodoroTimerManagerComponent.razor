@@ -1,3 +1,29 @@
-﻿<CountDownTimerComponent CountdownTimer="currentTimer" TimerEndedCallback="HandleTimerCompleted"></CountDownTimerComponent>
-<p>Current Timer Type: @currentTimerType</p>
+﻿<RadzenRow Style="max-width: 300px;" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" class="rz-background-color-base-800 rz-border-radius-6 rz-shadow-3 rz-p-1">
+    <RadzenColumn Size="2">
+
+    </RadzenColumn>
+    <RadzenColumn Size="8">
+        <CountDownTimerComponent CountdownTimer="currentTimer" TimerEndedCallback="HandleTimerCompleted"></CountDownTimerComponent>
+    </RadzenColumn>
+    <RadzenColumn Size="2">
+        <RadzenButton ButtonStyle="ButtonStyle.Info" Variant="Variant.Outlined" Icon="settings" Click="@SettingsButtonClicked"></RadzenButton>
+    </RadzenColumn>
+    
+    
+    @if (settingMenuActive)
+    {
+        <TimerLengthInputComponent Label="Pomodoro Length" @bind-Value="PomodoroLength"/>
+        <TimerLengthInputComponent Label="Short Break Length" @bind-Value="ShortBreakLength"/>
+        <TimerLengthInputComponent Label="Long Break Length" @bind-Value="LongBreakLength"/>
+        <RadzenFormField Text="Pomodoros Between Long Breaks">
+            <RadzenNumeric TValue="int" @bind-Value="PomodorosBetweenLongBreaks" />
+        </RadzenFormField>
+        <AlarmPlayerComponent @ref="alarmPlayer"></AlarmPlayerComponent>
+    }
+
+    <RadzenText>Current Timer: @currentTimerType</RadzenText>
+    <RadzenText>Pomodoros Until Long Break: @(PomodorosBetweenLongBreaks - pomodorosSinceLongBreak)</RadzenText>
+    
+</RadzenRow>
+
 

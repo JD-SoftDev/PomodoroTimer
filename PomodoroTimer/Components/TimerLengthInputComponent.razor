@@ -1,0 +1,53 @@
+﻿@inherits InputBase<TimeSpan>
+
+<RadzenRow>
+    <RadzenColumn Size="12">
+        <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="0rem">
+            <RadzenNumeric Min="1" Max="60" @bind-Value="Minutes" Style="width:50px;" class="rz-mx-0">
+
+            </RadzenNumeric>
+            <RadzenText TextAlign="TextAlign.Center" >:</RadzenText>
+            <RadzenNumeric Min="0" Max="59" @bind-Value="Seconds" Style="width:50px;" class="rz-mx-0">
+
+            </RadzenNumeric>
+            <RadzenText class="rz-mx-3">@Label</RadzenText>
+        </RadzenRow>
+        
+    </RadzenColumn>
+</RadzenRow>
+
+@code {
+
+    [Parameter] public int Minutes { get { return m_Minutes; } set { m_Minutes = value; HandleInputValueChanged(); } }
+    [Parameter] public int Seconds { get { return m_Seconds; } set { m_Seconds = value; HandleInputValueChanged(); } }
+    private int m_Minutes = 5;
+    private int m_Seconds = 5;
+    [Parameter] public string? Label { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        m_Minutes = Value.Minutes;
+        m_Seconds = Value.Seconds;
+        SetValueFromInput();
+        StateHasChanged();
+    }
+
+    protected void SetValueFromInput()
+    {
+        Value = TimeSpan.FromMinutes(m_Minutes) + TimeSpan.FromSeconds(m_Seconds);
+    }
+
+    protected void HandleInputValueChanged()
+    {
+        SetValueFromInput();
+        ValueChanged.InvokeAsync(Value);
+        StateHasChanged();
+    }
+
+    protected override bool TryParseValueFromString(string value, out TimeSpan result, out string validationErrorMessage)
+    {
+        result = TimeSpan.Parse(value);
+        validationErrorMessage = null;
+        return true;
+    }
+}

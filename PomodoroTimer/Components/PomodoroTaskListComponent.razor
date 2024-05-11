@@ -7,16 +7,27 @@
     <button @onclick="TaskCompletedButtonClicked">Yes</button>
 }
 
-<h3>Task List</h3>
-<TaskFormComponent OnFormSubmitted="AddTask"></TaskFormComponent>
-@if (todoList.Any())
-{
-    foreach(var task in todoList)
+<RadzenRow class="rz-background-color-base-400 rz-border-radius-6 rz-p-4 rz-mt-5">
+    <RadzenColumn Size="6">
+    @if (todoList.Any())
     {
-        <TaskListItemComponent Task="task" OnRemoveButtonClicked="RemoveTaskButtoClicked" OnMoveToTopButtonClicked="MoveToTopButtonClicked"></TaskListItemComponent>
+        foreach (var task in todoList)
+        {
+            
+             <TaskListItemComponent Task="task" OnRemoveButtonClicked="RemoveTaskButtoClicked" OnMoveToTopButtonClicked="MoveToTopButtonClicked"></TaskListItemComponent>
+            
+        }
+
     }
+    </RadzenColumn>
+    <RadzenColumn Size="6">
+        <TaskFormComponent OnFormSubmitted="AddTask"></TaskFormComponent>
+    </RadzenColumn>
     
-}
+
+</RadzenRow>
+
+
 
 @code {
     private bool showCompleteTaskDiag = false;
@@ -50,10 +61,14 @@
         StateHasChanged();
     }
 
-    public void HandlePomodoroCompleted()
+    public void HandlePomodoroCompleted(TimerFinishedDialogResult timerFinishedDialog)
     {
         _taskService.PomodoroCompleted();
-        showCompleteTaskDiag = _taskService.GetCurrentTask().CurrentNumberOfPomodoros >= _taskService.GetCurrentTask().NumberOfPomodorosToComplete;
+        if(timerFinishedDialog.TaskCompleted)
+        {
+            _taskService.TaskCompleted();
+        }
+        //showCompleteTaskDiag = _taskService.GetCurrentTask().CurrentNumberOfPomodoros >= _taskService.GetCurrentTask().NumberOfPomodorosToComplete;
         todoList = _taskService.GetToDoList();
         StateHasChanged();
     }
@@ -61,7 +76,8 @@
     private void TaskCompletedButtonClicked()
     {
         _taskService.TaskCompleted();
-        showCompleteTaskDiag = _taskService.GetCurrentTask()?.CurrentNumberOfPomodoros >= _taskService.GetCurrentTask()?.NumberOfPomodorosToComplete;
+        //showCompleteTaskDiag = _taskService.GetCurrentTask()?.CurrentNumberOfPomodoros >= _taskService.GetCurrentTask()?.NumberOfPomodorosToComplete;
+        todoList = _taskService.GetToDoList();
         StateHasChanged();
     }
 }

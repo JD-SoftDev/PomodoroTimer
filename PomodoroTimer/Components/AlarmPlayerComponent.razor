@@ -1,0 +1,9 @@
+﻿<RadzenRow>
+    <RadzenFormField Text="Alarm Volume">
+        <RadzenSlider TValue="double" @bind-Value="volume" Min="0" Max="1" Step="0.01">
+
+        </RadzenSlider>
+    </RadzenFormField>
+    
+    <RadzenButton Size="ButtonSize.Small" Icon="play_arrow" Click="@SamplePlay"></RadzenButton>
+</RadzenRow>
